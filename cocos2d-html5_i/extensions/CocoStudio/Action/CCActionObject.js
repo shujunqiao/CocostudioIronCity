@@ -23,11 +23,11 @@
  ****************************************************************************/
 
 /**
- * Base class for cc.ActionObject
+ * Base class for ccs.ActionObject
  * @class
  * @extends cc.Class
  */
-cc.ActionObject = cc.Class.extend({
+ccs.ActionObject = cc.Class.extend({
     _actionNodeList: null,
     _name: "",
     _loop: false,
@@ -35,6 +35,7 @@ cc.ActionObject = cc.Class.extend({
     _playing: false,
     _unitTime: 0,
     _currentTime: 0,
+    _scheduler:null,
     ctor: function () {
         this._actionNodeList = [];
         this._name = "";
@@ -43,6 +44,8 @@ cc.ActionObject = cc.Class.extend({
         this._playing = false;
         this._unitTime = 0.1;
         this._currentTime = 0;
+        this._scheduler = new cc.Scheduler();
+        cc.Director.getInstance().getScheduler().scheduleUpdateForTarget(this._scheduler, 0, false);
     },
 
     /**
@@ -133,7 +136,7 @@ cc.ActionObject = cc.Class.extend({
         this.setUnitTime(dic["unittime"]);
         var actionNodeList = dic["actionnodelist"];
         for (var i = 0; i < actionNodeList.length; i++) {
-            var locActionNode = new cc.ActionNode();
+            var locActionNode = new ccs.ActionNode();
             var locActionNodeDic = actionNodeList[i];
             locActionNode.initWithDictionary(locActionNodeDic, root);
             locActionNode.setUnitTime(this.getUnitTime());
@@ -144,7 +147,7 @@ cc.ActionObject = cc.Class.extend({
 
     /**
      * Adds a ActionNode to play the action.
-     * @param {cc.ActionNode} node
+     * @param {ccs.ActionNode} node
      */
     addActionNode: function (node) {
         if (!node) {
@@ -156,7 +159,7 @@ cc.ActionObject = cc.Class.extend({
 
     /**
      * Removes a ActionNode which play the action.
-     * @param {cc.ActionNode} node
+     * @param {ccs.ActionNode} node
      */
     removeActionNode: function (node) {
         if (node == null) {
@@ -170,10 +173,14 @@ cc.ActionObject = cc.Class.extend({
      */
     play: function () {
         this.stop();
+        this.updateToFrameByTime(0);
         var frameNum = this._actionNodeList.length;
         for (var i = 0; i < frameNum; i++) {
             var locActionNode = this._actionNodeList[i];
             locActionNode.playAction(this.getLoop());
+        }
+        if (this._loop) {
+            this._scheduler.scheduleCallbackForTarget(this, this.simulationActionUpdate, this, 0., cc.REPEAT_FOREVER, 0, false);
         }
     },
 
@@ -192,6 +199,7 @@ cc.ActionObject = cc.Class.extend({
             var locActionNode = this._actionNodeList[i];
             locActionNode.stopAction();
         }
+        this._scheduler.unscheduleCallbackForTarget(this, this.simulationActionUpdate);
         this._pause = false;
     },
 
@@ -203,6 +211,22 @@ cc.ActionObject = cc.Class.extend({
         for (var i = 0; i < this._actionNodeList.length; i++) {
             var locActionNode = this._actionNodeList[i];
             locActionNode.updateActionToTimeLine(time);
+        }
+    },
+    simulationActionUpdate: function (dt) {
+        if (this._loop) {
+            var isEnd = true;
+            var actionNodeList = this._actionNodeList;
+            for (var i = 0; i < actionNodeList.length; i++) {
+                var actionNode = actionNodeList[i];
+                if (actionNode.isActionDoneOnce() == false) {
+                    isEnd = false;
+                    break;
+                }
+            }
+            if (isEnd) {
+                this.play();
+            }
         }
     }
 });

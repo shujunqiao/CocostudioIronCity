@@ -22,10 +22,10 @@ var Monster = cc.Node.extend({
     _isLive:null,
     init:function(){
         //add cocostudio json file to widget.
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_MonsterGroundMoving);
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_MonsterSkyMoving);
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_MonsterGroundAnimation);
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_MonsterSkyAnimation);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_MonsterGroundMoving);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_MonsterSkyMoving);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_MonsterGroundAnimation);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_MonsterSkyAnimation);
         var r = this.random(0, 1);
         switch (r)
         {
@@ -56,7 +56,7 @@ var Monster = cc.Node.extend({
     MonsterGroundMoving:function(position){
         var pGameScene = GameScene.getScene();
         var armature = null;
-        armature = cc.Armature.create("MonsterGroundMoving");
+        armature = ccs.Armature.create("MonsterGroundMoving");
         armature.getAnimation().playByIndex(0);
         armature.getAnimation().setSpeedScale(1.5);
         armature.setScale(0.6);
@@ -78,7 +78,7 @@ var Monster = cc.Node.extend({
     MonsterSkyMoving:function(position){
         var pGameScene = GameScene.getScene();
         var armature = null;
-        armature = cc.Armature.create("MonsterSkyMoving");
+        armature = ccs.Armature.create("MonsterSkyMoving");
         armature.getAnimation().playByIndex(0);
         armature.getAnimation().setSpeedScale(1.5);
         armature.setScale(0.6);
@@ -107,7 +107,7 @@ var Monster = cc.Node.extend({
     //dead of monster on ground.
     MonsterGroundDestroyAction:function(position){
         var armature = null;
-        armature = cc.Armature.create("MonsterGroundAnimation");
+        armature = ccs.Armature.create("MonsterGroundAnimation");
         armature.getAnimation().playByIndex(0);
         armature.getAnimation().setSpeedScale(1.5);
         armature.setScale(0.6);
@@ -120,7 +120,7 @@ var Monster = cc.Node.extend({
     //dead of monster in sky.
     MonsterSkyDestroyAction:function(position){
         var armature = null;
-        armature = cc.Armature.create("MonsterSkyAnimation");
+        armature = ccs.Armature.create("MonsterSkyAnimation");
         armature.getAnimation().playByIndex(0);
         armature.getAnimation().setSpeedScale(1.5);
         armature.setScale(0.6);
@@ -214,7 +214,7 @@ var Monster = cc.Node.extend({
     },
     //callback of monster's Frame animation.
     DestroyActionActionEnded:function(armature, movementType, movementID){
-        if (movementType == CC_MovementEventType_COMPLETE || movementType == CC_MovementEventType_LOOP_COMPLETE)
+        if (movementType == ccs.MovementEventType.loopComplete || movementType == ccs.MovementEventType.complete)
         {
             this.DelayInit(0.3);
         }

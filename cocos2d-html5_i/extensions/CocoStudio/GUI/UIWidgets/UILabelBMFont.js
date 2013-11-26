@@ -23,20 +23,22 @@
  ****************************************************************************/
 
 /**
- * Base class for cc.UILabelBMFont
+ * Base class for ccs.UILabelBMFont
  * @class
- * @extends cc.UIWidget
+ * @extends ccs.UIWidget
  */
-cc.UILabelBMFont = cc.UIWidget.extend({
+ccs.UILabelBMFont = ccs.UIWidget.extend({
     _labelBMFontRenderer: null,
     _fileHasInit: false,
+    _fntFileName: "",
+    _stringValue: "",
     ctor: function () {
-        cc.UIWidget.prototype.ctor.call(this);
+        ccs.UIWidget.prototype.ctor.call(this);
         this._labelBMFontRenderer = null;
         this._fileHasInit = false;
     },
     initRenderer: function () {
-        cc.UIWidget.prototype.initRenderer.call(this);
+        ccs.UIWidget.prototype.initRenderer.call(this);
         this._labelBMFontRenderer = cc.LabelBMFont.create();
         this._renderer.addChild(this._labelBMFontRenderer);
     },
@@ -49,10 +51,12 @@ cc.UILabelBMFont = cc.UIWidget.extend({
         if (!fileName) {
             return;
         }
+        this._fntFileName = fileName;
         this._labelBMFontRenderer.initWithString("", fileName);
         this.updateAnchorPoint();
         this.labelBMFontScaleChangedWithSize();
         this._fileHasInit = true;
+        this.setText(this._stringValue);
     },
 
     /**
@@ -60,9 +64,10 @@ cc.UILabelBMFont = cc.UIWidget.extend({
      * @param {String} value
      */
     setText: function (value) {
-        if (!value || !this._fileHasInit) {
+        if (!value) {
             return;
         }
+        this._strStringValue = value;
         this._labelBMFontRenderer.setString(value);
         this.labelBMFontScaleChangedWithSize();
     },
@@ -72,7 +77,7 @@ cc.UILabelBMFont = cc.UIWidget.extend({
      * @returns {String}
      */
     getStringValue: function () {
-        return this._labelBMFontRenderer.getString();
+        return this._strStringValue;
     },
 
     /**
@@ -80,7 +85,7 @@ cc.UILabelBMFont = cc.UIWidget.extend({
      * @param {cc.Point} pt
      */
     setAnchorPoint: function (pt) {
-        cc.UIWidget.prototype.setAnchorPoint.call(this, pt);
+        ccs.UIWidget.prototype.setAnchorPoint.call(this, pt);
         this._labelBMFontRenderer.setAnchorPoint(pt);
     },
 
@@ -124,11 +129,20 @@ cc.UILabelBMFont = cc.UIWidget.extend({
 
     getDescription: function () {
         return "LabelBMFont";
+    },
+
+    createCloneInstance: function () {
+        return ccs.UILabelBMFont.create();
+    },
+
+    copySpecialProperties: function (labelBMFont) {
+        this.setFntFile(labelBMFont._fntFileName);
+        this.setText(labelBMFont._stringValue);
     }
 });
 
-cc.UILabelBMFont.create = function () {
-    var uiLabelBMFont = new cc.UILabelBMFont();
+ccs.UILabelBMFont.create = function () {
+    var uiLabelBMFont = new ccs.UILabelBMFont();
     if (uiLabelBMFont && uiLabelBMFont.init()) {
         return uiLabelBMFont;
     }

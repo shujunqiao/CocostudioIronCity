@@ -27,7 +27,7 @@ var MainMenuScene = cc.Scene.extend
         this._super();
 
         //add cocostudio scene to game
-        var gameSceneNode = cc.CCSSceneReader.getInstance().createNodeWithSceneFile(Scene_GameScene);
+        var gameSceneNode = ccs.SceneReader.getInstance().createNodeWithSceneFile(Scene_GameScene);
         this.addChild(gameSceneNode);
 
         var pAudio =gameSceneNode.getComponent("Audio");
@@ -43,6 +43,7 @@ var MainMenuScene = cc.Scene.extend
     //click btn of start.
     startBtnCallFunc:function(pSender)
     {
+        console.log("click btn.");
         //preload resources and relpaceScene
         cc.LoaderScene.preload(GameScene_resources, function ()
         {

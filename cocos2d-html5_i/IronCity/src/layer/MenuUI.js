@@ -7,7 +7,7 @@
  */
 
 //layer: game menu.
-var MenuUI = cc.UILayer.extend({
+var MenuUI = ccs.UILayer.extend({
     parentScene:null,
     settingBtn:null,
     bloodBar:null,
@@ -16,10 +16,10 @@ var MenuUI = cc.UILayer.extend({
     musicVolume:null,
     init:function(bloodBarPercent, value)
     {
-        if( cc.UILayer.prototype.init.call(this) )
+        if( ccs.UILayer.prototype.init.call(this) )
         {
             this.parentScene = GameScene.getScene();
-            this.addWidget( cc.UIHelper.getInstance().createWidgetFromJsonFile(Json_IronCityUI_1) );
+            this.addWidget( ccs.GUIReader.getInstance().widgetFromJsonFile(Json_IronCityUI_1) );
 
             this.settingBtn    = this.getWidgetByName("Setting");
             this.bloodBar      = this.getWidgetByName("BloodBar");
@@ -48,7 +48,7 @@ var MenuUI = cc.UILayer.extend({
     //call back function of setting button.
     settingBtnCallback:function(pSender, type)
     {
-        if(cc.TouchEventType.ENDED == type)
+        if(ccs.TouchEventType.ended == type)
         {
             this.parentScene = GameScene.getScene();
             var gameSetLayer = new SettingUI();

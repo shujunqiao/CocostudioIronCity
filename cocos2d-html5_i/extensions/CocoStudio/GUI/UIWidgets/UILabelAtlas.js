@@ -23,18 +23,14 @@
  ****************************************************************************/
 
 /**
- * Base class for cc.UICCLabelAtlas
+ * Base class for ccs.UICCLabelAtlas
  * @class
  * @extends cc.LabelAtlas
  */
-cc.UICCLabelAtlas = cc.LabelAtlas.extend({
+ccs.UICCLabelAtlas = cc.LabelAtlas.extend({
 
     setProperty: function (string, charMapFile, itemWidth, itemHeight, startCharMap) {
         this.initWithString(string, charMapFile, itemWidth, itemHeight, startCharMap);
-    },
-
-    setProperty: function (string, texture, itemWidth, itemHeight, startCharMap) {
-        this.initWithString(string, texture, itemWidth, itemHeight, startCharMap);
     },
 
     draw: function () {
@@ -45,12 +41,12 @@ cc.UICCLabelAtlas = cc.LabelAtlas.extend({
         cc.AtlasNode.prototype.draw.call(this);
     },
     updateDisplayedOpacity: function (opacity) {
-        cc.AtlasNode.prototype.setOpacity.call(this, opacity);
+        cc.AtlasNode.prototype.updateDisplayedOpacity.call(this, opacity);
     }
 });
 
-cc.UICCLabelAtlas.create = function () {
-    var uiCCLabelAtlas = new cc.UICCLabelAtlas();
+ccs.UICCLabelAtlas.create = function () {
+    var uiCCLabelAtlas = new ccs.UICCLabelAtlas();
     if (uiCCLabelAtlas && uiCCLabelAtlas.init()) {
         return uiCCLabelAtlas;
     }
@@ -58,20 +54,25 @@ cc.UICCLabelAtlas.create = function () {
 };
 
 /**
- * Base class for cc.UILabelAtlas
+ * Base class for ccs.UILabelAtlas
  * @class
- * @extends cc.UIWidget
+ * @extends ccs.UIWidget
  */
-cc.UILabelAtlas = cc.UIWidget.extend({
+ccs.UILabelAtlas = ccs.UIWidget.extend({
     _labelAtlasRenderer: null,
+    _stringValue: "",
+    _charMapFileName: "",
+    _itemWidth: 0,
+    _itemHeight: 0,
+    _startCharMap: "",
     ctor: function () {
-        cc.UIWidget.prototype.ctor.call(this);
+        ccs.UIWidget.prototype.ctor.call(this);
         this._labelAtlasRenderer = null;
     },
 
     initRenderer: function () {
-        cc.UIWidget.prototype.initRenderer.call(this);
-        this._labelAtlasRenderer = cc.UICCLabelAtlas.create();
+        ccs.UIWidget.prototype.initRenderer.call(this);
+        this._labelAtlasRenderer = ccs.UICCLabelAtlas.create();
         this._renderer.addChild(this._labelAtlasRenderer);
     },
 
@@ -82,9 +83,13 @@ cc.UILabelAtlas = cc.UIWidget.extend({
      * @param {number} itemWidth
      * @param {number} itemHeight
      * @param {String} startCharMap
-     * @param {Boolean} useSpriteFrame
      */
-    setProperty: function (stringValue, charMapFile, itemWidth, itemHeight, startCharMap, useSpriteFrame) {
+    setProperty: function (stringValue, charMapFile, itemWidth, itemHeight, startCharMap) {
+        this._stringValue = stringValue;
+        this._charMapFileName = charMapFile;
+        this._itemWidth = itemWidth;
+        this._itemHeight = itemHeight;
+        this._startCharMap = startCharMap;
         this._labelAtlasRenderer.setProperty(stringValue, charMapFile, itemWidth, itemHeight, startCharMap[0]);
         this.updateAnchorPoint();
         this.labelAtlasScaleChangedWithSize();
@@ -95,6 +100,7 @@ cc.UILabelAtlas = cc.UIWidget.extend({
      * @param {String} value
      */
     setStringValue: function (value) {
+        this._stringValue = value;
         this._labelAtlasRenderer.setString(value);
         this.labelAtlasScaleChangedWithSize();
     },
@@ -112,7 +118,7 @@ cc.UILabelAtlas = cc.UIWidget.extend({
      * @param {cc.Point} pt
      */
     setAnchorPoint: function (pt) {
-        cc.UIWidget.prototype.setAnchorPoint.call(this, pt);
+        ccs.UIWidget.prototype.setAnchorPoint.call(this, pt);
         this._labelAtlasRenderer.setAnchorPoint(cc.p(pt.x, pt.y));
     },
 
@@ -156,11 +162,19 @@ cc.UILabelAtlas = cc.UIWidget.extend({
 
     getDescription: function () {
         return "LabelAtlase";
+    },
+
+    createCloneInstance: function () {
+        return ccs.UILabelAtlas.create();
+    },
+
+    copySpecialProperties: function (labelAtlas) {
+        this.setProperty(labelAtlas._stringValue, labelAtlas._charMapFileName, labelAtlas._itemWidth, labelAtlas._itemHeight, labelAtlas._startCharMap);
     }
 });
 
-cc.UILabelAtlas.create = function () {
-    var uiLabelAtlas = new cc.UILabelAtlas();
+ccs.UILabelAtlas.create = function () {
+    var uiLabelAtlas = new ccs.UILabelAtlas();
     if (uiLabelAtlas && uiLabelAtlas.init()) {
         return uiLabelAtlas;
     }

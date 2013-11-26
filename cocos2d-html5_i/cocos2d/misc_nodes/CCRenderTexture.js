@@ -120,15 +120,15 @@ cc.RenderTexture = cc.Node.extend(/** @lends cc.RenderTexture# */{
         this._clearColor = cc.c4f(0, 0, 0, 0);
     },
 
-    onExit:null,
+    cleanup:null,
 
-    _onExitForCanvas:function () {
+    _cleanupForCanvas:function () {
         cc.Node.prototype.onExit.call(this);
         this._cacheContext = null;
         this._cacheCanvas = null;
     },
 
-    _onExitForWebGL: function () {
+    _cleanupForWebGL: function () {
         cc.Node.prototype.onExit.call(this);
 
         this._sprite = null;
@@ -180,7 +180,8 @@ cc.RenderTexture = cc.Node.extend(/** @lends cc.RenderTexture# */{
     },
 
     _initWithWidthAndHeightForWebGL: function (width, height, format, depthStencilFormat) {
-        cc.Assert(format != cc.TEXTURE_2D_PIXEL_FORMAT_A8, "only RGB and RGBA formats are valid for a render texture");
+        if(format == cc.TEXTURE_2D_PIXEL_FORMAT_A8)
+            cc.log( "cc.RenderTexture._initWithWidthAndHeightForWebGL() : only RGB and RGBA formats are valid for a render texture;");
 
         var gl = cc.renderContext, locScaleFactor = cc.CONTENT_SCALE_FACTOR();
 
@@ -247,7 +248,8 @@ cc.RenderTexture = cc.Node.extend(/** @lends cc.RenderTexture# */{
         }
 
         // check if it worked (probably worth doing :) )
-        cc.Assert(gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE, "Could not attach texture to framebuffer");
+        if(gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE)
+            cc.log("Could not attach texture to the framebuffer");
 
         locTexture.setAliasTexParameters();
 
@@ -658,6 +660,8 @@ cc.RenderTexture = cc.Node.extend(/** @lends cc.RenderTexture# */{
     },
 
     _newCCImageForWebGL:function (flipImage) {
+        cc.log("saveToFile isn't supported on Cocos2d-Html5");
+
         if(flipImage === null)
             flipImage = true;
         cc.Assert(this._pixelFormat == cc.TEXTURE_2D_PIXEL_FORMAT_RGBA8888, "only RGBA8888 can be saved as image");
@@ -816,7 +820,7 @@ cc.RenderTexture = cc.Node.extend(/** @lends cc.RenderTexture# */{
 
 if(cc.Browser.supportWebGL){
     cc.RenderTexture.prototype.ctor = cc.RenderTexture.prototype._ctorForWebGL;
-    cc.RenderTexture.prototype.onExit = cc.RenderTexture.prototype._onExitForWebGL;
+    cc.RenderTexture.prototype.cleanup = cc.RenderTexture.prototype._cleanupForWebGL;
     cc.RenderTexture.prototype.initWithWidthAndHeight = cc.RenderTexture.prototype._initWithWidthAndHeightForWebGL;
     cc.RenderTexture.prototype.begin = cc.RenderTexture.prototype._beginForWebGL;
     cc.RenderTexture.prototype._beginWithClear = cc.RenderTexture.prototype._beginWithClearForWebGL;
@@ -830,7 +834,7 @@ if(cc.Browser.supportWebGL){
     cc.RenderTexture.prototype.setClearColor = cc.RenderTexture.prototype._setClearColorForWebGL;
 } else {
     cc.RenderTexture.prototype.ctor = cc.RenderTexture.prototype._ctorForCanvas;
-    cc.RenderTexture.prototype.onExit = cc.RenderTexture.prototype._onExitForCanvas;
+    cc.RenderTexture.prototype.cleanup = cc.RenderTexture.prototype._cleanupForCanvas;
     cc.RenderTexture.prototype.initWithWidthAndHeight = cc.RenderTexture.prototype._initWithWidthAndHeightForCanvas;
     cc.RenderTexture.prototype.begin = cc.RenderTexture.prototype._beginForCanvas;
     cc.RenderTexture.prototype._beginWithClear = cc.RenderTexture.prototype._beginWithClearForCanvas;

@@ -7,14 +7,14 @@
  */
 
 //layer: setting layer.
-var SettingUI = cc.UILayer.extend({
+var SettingUI = ccs.UILayer.extend({
     musicEffectStatus:0,
     musicEffectSlider:null,
     musicVolumeSlider:null,
     parentScene:null,
     //init function: effectStatus: effect of audio, volumn: volume of music.
     init:function(effectStatus, volumn){
-        if( cc.UILayer.prototype.init.call(this) ){
+        if( ccs.UILayer.prototype.init.call(this) ){
             this.parentScene = GameScene.getScene();
             this.parentScene.moveMap.stop();
             this.parentScene.stopAllActions();
@@ -25,7 +25,7 @@ var SettingUI = cc.UILayer.extend({
             this.parentScene.menuLayer.settingBtn.setTouchEnable(false);
 
             //add cocostudio json file to widget.
-            this.addWidget(cc.UIHelper.getInstance().createWidgetFromJsonFile(Json_GameSceneSetMenu_1));
+            this.addWidget(ccs.GUIReader.getInstance().widgetFromJsonFile(Json_GameSceneSetMenu_1));
 
             this.musicEffectSlider = this.getWidgetByName("musicEffect");
             this.musicVolumeSlider = this.getWidgetByName("musicVolume");
@@ -45,8 +45,8 @@ var SettingUI = cc.UILayer.extend({
 
             backGameBtn.addTouchEventListener(this.backGameBtn, this);
             returnMainMenuBtn.addTouchEventListener(this.returnMainMenuBtnFunc, this);
-            this.musicEffectSlider.addEventListener(this.musicEffectSliderCallFunc, this);
-            this.musicVolumeSlider.addEventListener(this.musicVolumeSliderCallFunc, this);
+            this.musicEffectSlider.addEventListenerSlider(this.musicEffectSliderCallFunc, this);
+            this.musicVolumeSlider.addEventListenerSlider(this.musicVolumeSliderCallFunc, this);
             return true;
         }
 
@@ -54,7 +54,7 @@ var SettingUI = cc.UILayer.extend({
     },
     //callback function of music effect slider.
     musicEffectSliderCallFunc:function(pSender, type){
-        if(type == cc.SliderEventType.PERCENTCHANGED){
+        if(type == ccs.SliderEventType.percent_changed){
             if(this.musicEffectStatus == 0){
                 this.musicEffectSlider.setPercent(95);
                 this.musicEffectStatus=1;
@@ -67,12 +67,13 @@ var SettingUI = cc.UILayer.extend({
 
         this.parentScene.menuLayer.musicEffect = this.musicEffectStatus;
         //set audio state.
+        AudioPlayer.getInstance().setBackgroundMusicPlay(this.musicEffectStatus);
         //AudioPlayer::sharedAudio()->setBackgroundMusicPlay(musicEffectStatus);
     },
     //callback function of music volume slider.
     musicVolumeSliderCallFunc:function(pSender, type){
         var voice = 0.0;
-        if(type == cc.SliderEventType.PERCENTCHANGED){
+        if(type == ccs.SliderEventType.percent_changed){
             voice = this.musicVolumeSlider.getPercent();
             if(this.musicVolumeSlider.getPercent()<8){
                 this.musicVolumeSlider.setPercent(8);
@@ -86,10 +87,11 @@ var SettingUI = cc.UILayer.extend({
         this.parentScene.menuLayer.musicVolume = this.musicVolumeSlider.getPercent();
         //set audio voice.
         //AudioPlayer::sharedAudio().setVolume(voice/100);
+        AudioPlayer.getInstance().setVolume(voice/100);
     },
     //callback of backGame button.
     backGameBtn:function(pSender, type){
-        if(cc.TouchEventType.ENDED == type){
+        if(ccs.TouchEventType.ended == type){
             this.parentScene.resumeSchedulerAndActions();
             this.parentScene.playLayer.imManArmature.resumeSchedulerAndActions();
             this.parentScene.playLayer.setTouchEnabled(true);

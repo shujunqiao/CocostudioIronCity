@@ -197,6 +197,7 @@ cc.setup = function (el, width, height) {
         element.appendChild(cc.canvas);
         cc.container.style.width = (width || 480) + "px";
         cc.container.style.height = (height || 320) + "px";
+        cc.container.style.margin = "0 auto";
     }
     cc.container.style.position = 'relative';
     cc.container.style.overflow = 'hidden';
@@ -308,7 +309,8 @@ cc.Application = cc.Class.extend(/** @lends cc.Application# */{
      */
     ctor:function () {
         this._animationInterval = 0;
-        cc.Assert(!cc._sharedApplication, "CCApplication ctor");
+        if(cc._sharedApplication)
+            throw "Application has been initialized";
         cc._sharedApplication = this;
     },
 
@@ -364,11 +366,10 @@ cc.Application = cc.Class.extend(/** @lends cc.Application# */{
 });
 
 /**
- * Get current applicaiton instance.
+ * Get current application instance.
  * @return {cc.Application}  Current application instance pointer.
  */
 cc.Application.getInstance = function () {
-    cc.Assert(cc._sharedApplication, "sharedApplication");
     return cc._sharedApplication;
 };
 

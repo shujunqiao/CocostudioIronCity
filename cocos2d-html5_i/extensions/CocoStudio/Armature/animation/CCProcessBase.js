@@ -33,11 +33,11 @@ CC_ANIMATION_TYPE_LOOP_BACK = 1;//the animation loop from back
 CC_ANIMATION_TYPE_MAX = 2;//the animation max
 
 /**
- * Base class for cc.ProcessBase objects.
+ * Base class for ccs.ProcessBase objects.
  * @class
  * @extends cc.Class
  */
-cc.ProcessBase = cc.Class.extend({
+ccs.ProcessBase = cc.Class.extend({
     _processScale:1,
     _isComplete:true,
     _isPause:true,
@@ -62,7 +62,7 @@ cc.ProcessBase = cc.Class.extend({
         this._durationTween = 0;
         this._rawDuration = 0;
         this._loopType = CC_ANIMATION_TYPE_LOOP_BACK;
-        this._tweenEasing = cc.TweenType.Linear;
+        this._tweenEasing = ccs.TweenType.linear;
         this._animationInternal = cc.Director.getInstance().getAnimationInterval();
         this._curFrameIndex = 0;
         this._durationTween = 0;
@@ -90,7 +90,6 @@ cc.ProcessBase = cc.Class.extend({
 
     /**
      * play animation by animation name.
-     * @param {Number} animationName The animation name you want to play
      * @param {Number} durationTo
      *         he frames between two animation changing-over.It's meaning is changing to this animation need how many frames
      *         -1 : use the value from CCMovementData get from flash design panel
@@ -110,7 +109,7 @@ cc.ProcessBase = cc.Class.extend({
      *         1  : fade in
      *         2  : fade in and out
      */
-    play:function (animation, durationTo, durationTween, loop, tweenEasing) {
+    play:function (durationTo, durationTween, loop, tweenEasing) {
         this._isComplete = false;
         this._isPause = false;
         this._isPlaying = true;
@@ -150,7 +149,7 @@ cc.ProcessBase = cc.Class.extend({
              *	if currentFrame is bigger or equal than this._nextFrameIndex, then reduce it util currentFrame is
              *  smaller than this._nextFrameIndex
              */
-            locCurrentFrame = cc.fmodf(locCurrentFrame, locNextFrameIndex);
+            locCurrentFrame = ccs.fmodf(locCurrentFrame, locNextFrameIndex);
         }
         this._currentFrame = locCurrentFrame
         this.updateHandler();
@@ -163,9 +162,18 @@ cc.ProcessBase = cc.Class.extend({
     updateHandler:function () {
         //override
     },
-    gotoFrame:function (keyFrameIndex) {
-        this._curFrameIndex = keyFrameIndex;
-        this.pause();
+
+    gotoFrame:function (frameIndex) {
+        var locLoopType = this._loopType;
+        if (locLoopType == CC_ANIMATION_TYPE_NO_LOOP) {
+            locLoopType = CC_ANIMATION_TYPE_MAX;
+        }
+        else if (locLoopType == CC_ANIMATION_TYPE_TO_LOOP_FRONT) {
+            locLoopType = CC_ANIMATION_TYPE_LOOP_FRONT;
+        }
+        this._loopType = locLoopType;
+        this._curFrameIndex = frameIndex;
+        this._nextFrameIndex = this._durationTween;
     },
 
     /**

@@ -7,16 +7,16 @@
  */
 
 //layer: game over.
-var GameOver = cc.UILayer.extend({
+var GameOver = ccs.UILayer.extend({
     finalScore:null,
     parentScene:null,
     //init function.
     init:function()
     {
-        if( cc.UILayer.prototype.init.call(this) ){
+        if( ccs.UILayer.prototype.init.call(this) ){
             this.parentScene = GameScene.getScene();
             //add cocostudio json file to widget.
-            this.addWidget(cc.UIHelper.getInstance().createWidgetFromJsonFile(Json_GameSceneOverLayer_1));
+            this.addWidget(ccs.GUIReader.getInstance().widgetFromJsonFile(Json_GameSceneOverLayer_1));
 
             //get unit of all parts.
             var playAgainBtn        = this.getWidgetByName("playAgain");
@@ -53,7 +53,7 @@ var GameOver = cc.UILayer.extend({
     },
     //callback function of playAgain button.
     playAgainBtnCallback:function(pSender, type){
-        if(cc.TouchEventType.ENDED == type){
+        if(ccs.TouchEventType.ended == type){
             var againScene = new GameScene();
             againScene.init();
             var playAgainTransition =  cc.TransitionFade.create(0.5, againScene, cc.WHITE);

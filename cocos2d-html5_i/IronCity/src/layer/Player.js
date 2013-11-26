@@ -39,13 +39,13 @@ var Player = cc.Layer.extend
         var size = cc.Director.getInstance().getWinSize();
 
         //add cocostudio json file to widget.
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMRun);
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMRunJump);
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMRunStop);
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMStandJump);
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_LaserRunAttack);
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_LaserStandAttack);
-        cc.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMDead);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMRun);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMRunJump);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMRunStop);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMStandJump);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_LaserRunAttack);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_LaserStandAttack);
+        ccs.ArmatureDataManager.getInstance().addArmatureFileInfo(Json_CMDead);
 
         this.playerX = 50.0;
         this.playerY = 70.0;
@@ -215,7 +215,7 @@ var Player = cc.Layer.extend
     },
     //Running animation.
     CMRunning:function(){
-        var armature = cc.Armature.create("CMRun");
+        var armature = ccs.Armature.create("CMRun");
         armature.getAnimation().play("Running");
         armature.getAnimation().setSpeedScale(2.0);
         armature.setScale(this.playerScale);
@@ -232,7 +232,7 @@ var Player = cc.Layer.extend
 
     //Run jump animation.
     CMRunJump:function(){
-        var armature = cc.Armature.create("CMRunJump");
+        var armature = ccs.Armature.create("CMRunJump");
         armature.getAnimation().play("RuningJump");
         armature.getAnimation().setSpeedScale(1.5);
         armature.setScale(this.playerScale);
@@ -248,7 +248,7 @@ var Player = cc.Layer.extend
 
     //Stand jump animation.
     CMStandJump:function(){
-        var armature = cc.Armature.create("CMStandJump");
+        var armature = ccs.Armature.create("CMStandJump");
         armature.getAnimation().play("StandJump");
         armature.getAnimation().setSpeedScale(1.5);
         armature.setScale(this.playerScale);
@@ -264,7 +264,7 @@ var Player = cc.Layer.extend
 
     //Running stop animation.
     CMRunningStop:function(){
-        var armature = cc.Armature.create("CMRunStop");
+        var armature = ccs.Armature.create("CMRunStop");
         armature.getAnimation().play("RunningStop");
         armature.getAnimation().setSpeedScale(1.5);
         armature.setScale(this.playerScale);
@@ -283,7 +283,7 @@ var Player = cc.Layer.extend
         var angle = this.getAngle(touch);
         var posHand = this.getPosHand(angle);
 
-        var armature = cc.Armature.create("LaserRunAttack");
+        var armature = ccs.Armature.create("LaserRunAttack");
         armature.getAnimation().play("RunningAttack");
         armature.getAnimation().setSpeedScale(2.0);
         armature.setScale(this.playerScale);
@@ -303,7 +303,7 @@ var Player = cc.Layer.extend
         this._attackPos = posHand;
         var angle = this.getAngle(touch);
 
-        var armature = cc.Armature.create("LaserStandAttack");
+        var armature = ccs.Armature.create("LaserStandAttack");
         armature.getAnimation().play("StandAttack");
         armature.getAnimation().setSpeedScale(1.5);
         armature.setScale(this.playerScale);
@@ -321,7 +321,7 @@ var Player = cc.Layer.extend
         this.setTouchEnabled(false);
         this.imManArmature.removeFromParent(true);
         var armature = null;
-        armature = cc.Armature.create("CMDead");
+        armature = ccs.Armature.create("CMDead");
         armature.getAnimation().playByIndex(0.0, 1.0, 1.0,0.0, 1.0);
         armature.getAnimation().setSpeedScale(0.5);
         armature.setScale(this.playerScale);
@@ -335,7 +335,7 @@ var Player = cc.Layer.extend
     },
     //CallBack of running jump animation.
     amatureActionCallBack:function(armature, movementType, armature){
-        if (movementType == CC_MovementEventType_COMPLETE || movementType == CC_MovementEventType_LOOP_COMPLETE)
+        if (movementType == ccs.MovementEventType.loopComplete || movementType == ccs.MovementEventType.complete)
         {
             switch (this.actionNum)
             {
@@ -374,7 +374,7 @@ var Player = cc.Layer.extend
     },
     //callback function of attack animation.
     setAttackEvent:function(armature, movementType, movementID){
-        if (movementType == CC_MovementEventType_COMPLETE || movementType == CC_MovementEventType_LOOP_COMPLETE)
+        if (movementType == ccs.MovementEventType.loopComplete || movementType == ccs.MovementEventType.complete)
         {
             //play audio and launch laser.
             AudioPlayer.getInstance().playEffect(g_ArrEffects.Effect_Attack_0);
@@ -394,7 +394,7 @@ var Player = cc.Layer.extend
     },
     //callback function of dead animation.
     Dead:function(armature, movementType, movementID){
-        if (movementType == CC_MovementEventType_COMPLETE || movementType == CC_MovementEventType_LOOP_COMPLETE)
+        if (movementType == ccs.MovementEventType.loopComplete || movementType == ccs.MovementEventType.complete)
         {
             if(GameScene.getScene())
                 GameScene.getScene().gameOver();

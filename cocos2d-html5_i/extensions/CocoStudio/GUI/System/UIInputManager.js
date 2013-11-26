@@ -23,18 +23,17 @@
  ****************************************************************************/
 
 /**
- * Base class for cc.UIHelper
+ * Base class for ccs.UIHelper
  * @class
  * @extends cc.Class
  */
-cc.UIInputManager = cc.Class.extend({
+ccs.UIInputManager = cc.Class.extend({
     _manageredWidget: null,
     _selectedWidgets: null,
     _touchBeganedPoint: null,
     _touchMovedPoint: null,
     _touchEndedPoint: null,
     _touchCanceledPoint: null,
-    _widgetBeSorted: false,
     _touchDown: false,
     _longClickTime: 0,
     _longClickRecordTime: 0,
@@ -47,7 +46,6 @@ cc.UIInputManager = cc.Class.extend({
         this._touchMovedPoint = cc.p(0, 0);
         this._touchEndedPoint = cc.p(0, 0);
         this._touchCanceledPoint = cc.p(0, 0);
-        this._widgetBeSorted = false;
         this._touchDown = false;
         this._longClickTime = 0;
         this._longClickRecordTime = 0;
@@ -57,7 +55,7 @@ cc.UIInputManager = cc.Class.extend({
 
     /**
      * Regist a widget to input manager.
-     * @param {cc.UIWidget} widget
+     * @param {ccs.UIWidget} widget
      */
     registWidget: function (widget) {
         if (!widget) {
@@ -70,16 +68,8 @@ cc.UIInputManager = cc.Class.extend({
     },
 
     /**
-     * A call back function called when widget tree struct has changed.
-     * If widget tree struct has changed, uiinputmanager will resort registed widgets.
-     */
-    uiSceneHasChanged: function () {
-        this._widgetBeSorted = false;
-    },
-
-    /**
      * Check touch event
-     * @param {cc.UIWidget} root
+     * @param {ccs.UIWidget} root
      * @param {cc.Point} touchPoint
      * @returns {boolean}
      */
@@ -102,7 +92,7 @@ cc.UIInputManager = cc.Class.extend({
 
     /**
      * Remove a registed widget from input manager.
-     * @param {cc.UIWidget} widget
+     * @param {ccs.UIWidget} widget
      */
     removeManageredWidget: function (widget) {
         if (!widget) {
